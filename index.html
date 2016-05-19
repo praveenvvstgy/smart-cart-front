@@ -1,0 +1,80 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+
+  <title>My Parse App</title>
+  <meta name="description" content="My Parse App">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script type="text/javascript" src="parse-latest.js"></script>
+</head>
+
+<body>
+  
+  <div id="main">
+    <h1>Product Cart</h1>
+
+    <p>The products in the cart are:</p>
+
+    <div>
+      <table id="results-table">
+      <tr>
+        <th>Product</th>
+      </tr>
+      </table>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    Parse.initialize("parsetest", "myMasterKey");
+    Parse.serverURL = 'https://parsesrvtest.herokuapp.com/parse'
+    
+    var TestObject = Parse.Object.extend("product");
+    var testObject = new TestObject();
+
+    var query = new Parse.Query(TestObject);
+
+    function getData() {
+      query.find({
+        success: function(results) {
+          $('#results-table').empty();
+          for (var i = 0; i < results.length; i++) { 
+             var object = results[i];
+             (function($) {
+                $('#results-table').append('<tr><td>' + object.get('productName') + '</td></tr>');
+             })(jQuery);
+         }
+        },
+        error: function(error) {
+            alert("Error: " + error.code + " " + error.message);
+        }
+      });
+      setTimeout(getData, 3000);
+    }
+
+    getData();
+
+    // var subscription = query.subscribe();
+
+    // subscription.on('open', () => {
+    //  console.log('subscription opened');
+    // });
+
+    // subscription.on('create', (object) => {
+    //   console.log('object created');
+    //   console.log(object);
+    // });
+
+    // Parse.LiveQuery.on('open', () => {
+    //   console.log('socket connection established');
+    // });
+
+    // Parse.LiveQuery.on('error', (error) => {
+    //   console.log(error);
+    // });
+  </script>
+</body>
+
+</html>
